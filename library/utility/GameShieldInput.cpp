@@ -1,10 +1,5 @@
 #include "WProgram.h"
-#include <GameShield/Input.h>
-
-GameShieldInput& GameShieldInput::getInstance() {
-	static GameShieldInput instance;
-	return instance;
-}
+#include "GameShieldInput.h"
 
 GameShieldInput::GameShieldInput() {
 	m_bReqInit = true;
@@ -59,8 +54,12 @@ void GameShieldInput::update() {
 	m_bCurrentButtonStates[BUTTON_RIGHT] = (digitalRead(PIN_BTN_RIGHT) == LOW);
 	
 	// Read joystick
-	int nJoystickX = analogRead(PIN_JOYSTICK_X);
-	int nJoystickY = analogRead(PIN_JOYSTICK_Y);
+	long nJoystickX = analogRead(PIN_JOYSTICK_X);
+	long nJoystickY = analogRead(PIN_JOYSTICK_Y);
+	
+	// Calculating Joystick value between -127 and 128
+	m_nCurrentJoystickValueX = (255 * ((100 * (nJoystickX - JOYSTICK_X_MIN)) / (JOYSTICK_X_MAX - JOYSTICK_X_MIN))) / 100 - 128;
+	m_nCurrentJoystickValueY = (255 * ((100 * (nJoystickY - JOYSTICK_Y_MIN)) / (JOYSTICK_Y_MAX - JOYSTICK_Y_MIN))) / 100 - 128;
 }
 
 bool GameShieldInput::isButtonPressed(int nButtonId) {
@@ -85,4 +84,36 @@ int GameShieldInput::getJoystickValueX() {
 
 int GameShieldInput::getJoystickValueY() {
 	return m_nCurrentJoystickValueY;
+}
+
+bool GameShieldInput::isJoystickLeft() {
+	return (m_nCurrentJoystickValueX <= -64);
+}
+
+bool GameShieldInput::isJoystickRight() {
+	return (m_nCurrentJoystickValueX >= 64);
+}
+
+bool GameShieldInput::isJoystickUp() {
+	return (m_nCurrentJoystickValueY >= 64);
+}
+
+bool GameShieldInput::isJoystickDown() {
+	return (m_nCurrentJoystickValueY <= -64);
+}
+
+bool GameShieldInput::wasJoystickMovedLeft() {
+	return (m_nCurrentJoystickValueX < m_nLastJoystickValueX);
+}
+
+bool GameShieldInput::wasJoystickMovedRight() {
+	return (m_nCurrentJoystickValueX > m_nLastJoystickValueX);
+}
+
+bool GameShieldInput::wasJoystickMovedUp() {
+	return (m_nCurrentJoystickValueY > m_nLastJoystickValueY);
+}
+
+bool GameShieldInput::wasJoystickMovedDown() {
+	return (m_nCurrentJoystickValueY < m_nLastJoystickValueY);
 }

@@ -1,11 +1,18 @@
+#include "GameShield.h"
 #include "WProgram.h"
-#include <GameShield.h>
-
-GameShield& GameShield::getInstance() {
-	static GameShield instance;
-	return instance;
-}
 
 GameShield::GameShield() {
 	m_bReqInit = true;
+}
+
+void GameShield::init() {
+	m_bReqInit = false;
+	m_oInput.init();
+}
+
+GameShieldInput GameShield::getInput() {
+	if (m_bReqInit)
+		init();
+		
+	return m_oInput;
 }

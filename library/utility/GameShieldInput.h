@@ -27,11 +27,11 @@
 #define JOYSTICK_X_MIN	0
 #define JOYSTICK_X_MAX	1023
 #define JOYSTICK_Y_MIN	70
-#define JOYSTICK_Y_MAX	950	
+#define JOYSTICK_Y_MAX	965	
 
 class GameShieldInput {
 	public:
-		static GameShieldInput& getInstance();
+		GameShieldInput();
 		void init();
 		void update();
 		
@@ -66,10 +66,6 @@ class GameShieldInput {
 		int m_nCurrentJoystickValueY;
 		int m_nLastJoystickValueX;
 		int m_nLastJoystickValueY;	
-		
-		// (Copy) constructor
-		GameShieldInput();
-		GameShieldInput(const GameShieldInput&);
 };
 
 #endif /* INPUT_H */
